@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+    <action name="garage/vehicle/save"><section name="garage"/></action>
+    <action name="garage/vehicle/delete"><section name="garage"/></action>
+    <action name="garage/vehicle/select"><section name="garage"/></action>
+    <action name="garage/vehicle/shop"><section name="garage"/></action>
+    <action name="garage/vehicle/defaultVehicle"><section name="garage"/></action>
+    <action name="customer/account/loginPost"><section name="garage"/></action>
+    <action name="customer/account/logout"><section name="garage"/></action>
+</config>

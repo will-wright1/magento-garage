@@ -1,0 +1,97 @@
+{
+    "automotive_garage_vehicle": {
+        "column": {
+            "entity_id": true,
+            "customer_id": true,
+            "registration": true,
+            "make": true,
+            "model": true,
+            "nickname": true,
+            "vehicle_type_id": true,
+            "model_year": true,
+            "variant": true,
+            "is_default": true,
+            "is_selected": true,
+            "created_at": true,
+            "updated_at": true,
+            "vehicle_market": true,
+            "registration_country": true,
+            "registration_region": true,
+            "registration_display": true,
+            "vin": true,
+            "vin_format": true
+        },
+        "constraint": {
+            "GARAGE_VEHICLE_TYPE_FK": true,
+            "PRIMARY": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_CUSTOMER_REGISTRATION": true,
+            "GARAGE_CUSTOMER_PLATE_JURISDICTION_UNQ": true,
+            "GARAGE_CUSTOMER_VIN_UNQ": true,
+            "FK_1611F829B430758093356A0CDF78CA30": true,
+            "UNQ_41CDEBE4D5EA8196328446CD30278BA9": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_CUSTOMER_ID_VIN": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_CUSTOMER_ID_REGISTRATION": true
+        }
+    },
+    "automotive_garage_vehicle_type": {
+        "column": {
+            "entity_id": true,
+            "code": true,
+            "make": true,
+            "model": true,
+            "model_year": true,
+            "variant": true,
+            "is_enabled": true,
+            "market": true,
+            "generation": true,
+            "trim": true,
+            "engine": true,
+            "body_style": true,
+            "transmission": true,
+            "fuel_type": true,
+            "steering": true,
+            "drivetrain": true,
+            "wheelbase_mm": true,
+            "bed_length_mm": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "GARAGE_TYPE_CODE_UNQ": true,
+            "GARAGE_TYPE_DEFINITION_UNQ": true,
+            "GARAGE_TYPE_MARKET_DEFINITION_UNQ": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_TYPE_CODE": true,
+            "UNQ_1A97F3FA6A66DA74A15117898EE2F9BC": true,
+            "AUTOMOTIVE_GARAGE_VEHICLE_TYPE_MAKE_MODEL_MODEL_YEAR_VARIANT": true
+        }
+    },
+    "automotive_garage_product_rule": {
+        "column": {
+            "product_id": true,
+            "is_universal": true,
+            "universal_market": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "GARAGE_RULE_PRODUCT_FK": true,
+            "AUTOMOTIVE_GARAGE_PRD_RULE_PRD_ID_CAT_PRD_ENTT_ENTT_ID": true
+        }
+    },
+    "automotive_garage_product_fitment": {
+        "column": {
+            "product_id": true,
+            "vehicle_type_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "GARAGE_FITMENT_PRODUCT_FK": true,
+            "GARAGE_FITMENT_TYPE_FK": true,
+            "AUTOMOTIVE_GARAGE_PRD_FITMENT_PRD_ID_CAT_PRD_ENTT_ENTT_ID": true,
+            "FK_7B11B4583E9A5653F40A1755B33A8107": true
+        },
+        "index": {
+            "GARAGE_FITMENT_TYPE_IDX": true,
+            "AUTOMOTIVE_GARAGE_PRODUCT_FITMENT_VEHICLE_TYPE_ID": true
+        }
+    }
+}

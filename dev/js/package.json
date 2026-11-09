@@ -1,0 +1,7 @@
+{
+    "name": "garage-selector-tests",
+    "private": true,
+    "type": "module",
+    "scripts": {"test": "node --test ../../Test/selector.test.mjs"},
+    "devDependencies": {"jsdom": "26.1.0"}
+}

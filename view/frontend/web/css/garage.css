@@ -1,0 +1,33 @@
+.garage-account { max-width: 960px; }
+.garage-account h2 { font-size: 2.2rem; margin: 2.4rem 0 1.6rem; }
+.garage-vehicles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.garage-vehicle { border: 1px solid #ccc; border-radius: 6px; padding: 20px; margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.garage-vehicle-selected { border: 2px solid #1979c3; padding: 19px; }
+.garage-vehicle-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.garage-registration { display: inline-block; background: #ffdf5d; color: #171717; border: 1px solid #a88c24; border-radius: 4px; padding: 6px 10px; letter-spacing: .06em; font-size: 1.8rem; }
+.garage-registration-neutral { background: #f3f5f7; border-color: #aeb7c2; }
+.garage-market, .garage-specifications { color: #555; font-size: 1.3rem; }
+.garage-form [hidden] { display: none !important; }
+.garage-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.garage-badge { font-size: 1.2rem; background: #e7f3fc; color: #174f79; border-radius: 3px; padding: 3px 7px; }
+.garage-badge-default { background: #eee; color: #333; }
+.garage-vehicle h3 { font-size: 1.8rem; margin: 18px 0 6px; }
+.garage-nickname { color: #555; margin: 0 0 12px; }
+.garage-vehicle-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+.garage-vehicle-actions form { margin: 0; }
+.garage-vehicle-actions .action { min-height: 40px; }
+.garage-vehicle-actions a.action { display: inline-flex; align-items: center; }
+.garage-remove { color: #8b2222; }
+.garage-form-section { border-top: 1px solid #ddd; margin-top: 28px; }
+.garage-form { max-width: 520px; }
+.garage-form .fieldset { margin-bottom: 24px; }
+.garage-form .field { margin-bottom: 20px; }
+.garage-form .label { display: inline-block; margin-bottom: 7px; font-weight: 600; }
+.garage-form .input-text { width: 100%; min-height: 42px; }
+.garage-form .note { color: #555; font-size: 1.2rem; margin-top: 6px; }
+.garage-registration-input { text-transform: uppercase; }
+.garage-vehicle-selector [hidden] { display: none !important; }
+.garage-vehicle-selector [data-catalogue-toggle] { margin-bottom: 20px; }
+.garage-vehicle-selector select { min-height: 42px; width: 100%; }
+.garage-form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.garage-account a:focus-visible, .garage-account button:focus-visible, .garage-account input:focus-visible, .garage-account select:focus-visible { outline: 3px solid #1979c3; outline-offset: 3px; }

@@ -1,0 +1,32 @@
+name: Validate module
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, dom
+          tools: composer
+          coverage: none
+      - run: composer validate --strict --no-check-publish
+      - run: php dev/validate.php
+      - run: php Test/run.php
+  selector:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: dev/js/package-lock.json
+      - run: npm ci --prefix dev/js
+      - run: npm test --prefix dev/js

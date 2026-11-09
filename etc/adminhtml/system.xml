@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system><section id="automotive_garage" translate="label" sortOrder="610" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Customer Garage</label><tab>catalog</tab><resource>Automotive_Garage::manage</resource>
+        <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Markets and presentation</label>
+            <field id="default_market" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"><label>Default vehicle specification market</label><source_model>Automotive\Garage\Model\Config\Source\Options</source_model><comment>Initial choice for new vehicles. Does not change existing vehicles or infer specification from an address.</comment></field>
+            <field id="default_country" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1"><label>Default plate issuing country</label><source_model>Automotive\Garage\Model\Config\Source\Options</source_model></field>
+            <field id="plate_requirement" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1"><label>Plate entry</label><source_model>AutomotiveGaragePlateOptions</source_model><comment>Auto follows the issuing country, independently of the vehicle specification market.</comment></field>
+            <field id="badge_style" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1"><label>Registration badge style</label><source_model>AutomotiveGarageBadgeOptions</source_model></field>
+        </group>
+    </section></system>
+</config>

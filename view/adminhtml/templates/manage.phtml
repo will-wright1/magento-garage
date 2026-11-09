@@ -1,0 +1,86 @@
+<?php
+/** @var \Automotive\Garage\Block\Adminhtml\Manage $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$values = $block->getTypeValues();
+$fitment = $block->getFitmentValues();
+$saveUrl = $block->getUrl('garage/manage/save');
+$key = $block->getGarageFormKey();
+?>
+<div class="garage-manage">
+    <section aria-labelledby="garage-types-heading">
+        <h2 id="garage-types-heading"><?= $escaper->escapeHtml(__('Vehicle catalogue')) ?></h2>
+        <p><?= $escaper->escapeHtml(__('Create a separate definition for each specification market, model year and variant. Use the structured fields for details that affect fitment.')) ?></p>
+        <table class="data-grid">
+            <thead><tr><th class="data-grid-th"><?= $escaper->escapeHtml(__('Vehicle code')) ?></th><th class="data-grid-th"><?= $escaper->escapeHtml(__('Vehicle')) ?></th><th class="data-grid-th"><?= $escaper->escapeHtml(__('Enabled')) ?></th><th class="data-grid-th"><?= $escaper->escapeHtml(__('Action')) ?></th></tr></thead>
+            <tbody>
+                <?php foreach ($block->getTypeRows() as $type): ?>
+                    <tr><td><?= $escaper->escapeHtml($type->code) ?></td><td><?= $escaper->escapeHtml($type->label()) ?></td><td><?= $escaper->escapeHtml($type->enabled ? __('Yes') : __('No')) ?></td><td><a href="<?= $escaper->escapeUrl($block->getUrl('garage/manage/index', ['type_id' => $type->id])) ?>"><?= $escaper->escapeHtml(__('Edit')) ?></a></td></tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <nav class="garage-admin-pages" aria-label="<?= $escaper->escapeHtmlAttr(__('Vehicle catalogue pages')) ?>">
+            <?php if ($block->page() > 1): ?><a href="<?= $escaper->escapeUrl($block->getUrl('garage/manage/index', ['p' => $block->page() - 1])) ?>"><?= $escaper->escapeHtml(__('Previous')) ?></a><?php endif; ?>
+            <span><?= $escaper->escapeHtml(__('Page %1 of %2', $block->page(), $block->pages())) ?></span>
+            <?php if ($block->page() < $block->pages()): ?><a href="<?= $escaper->escapeUrl($block->getUrl('garage/manage/index', ['p' => $block->page() + 1])) ?>"><?= $escaper->escapeHtml(__('Next')) ?></a><?php endif; ?>
+        </nav>
+        <h3><?= $escaper->escapeHtml($values ? __('Edit vehicle definition') : __('Add vehicle definition')) ?></h3>
+        <form method="post" action="<?= $escaper->escapeUrl($saveUrl) ?>" class="garage-admin-form">
+            <input type="hidden" name="form_key" value="<?= $escaper->escapeHtmlAttr($key) ?>">
+            <input type="hidden" name="operation" value="save_type">
+            <input type="hidden" name="entity_id" value="<?= (int) ($values['entity_id'] ?? 0) ?: '' ?>">
+            <label for="garage-type-market"><?= $escaper->escapeHtml(__('Vehicle specification market')) ?></label>
+            <select class="admin__control-select" id="garage-type-market" name="market"><?php foreach (\Automotive\Garage\Model\Market::LABELS as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= ($values['market'] ?? 'GB') === $code ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?></select>
+            <?php foreach (['code' => __('Stable vehicle code'), 'make' => __('Make'), 'model' => __('Model'), 'model_year' => __('Model year'), 'variant' => __('Variant')] as $field => $label): ?>
+                <label for="garage-type-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml($label) ?></label>
+                <input class="admin__control-text" id="garage-type-<?= $escaper->escapeHtmlAttr($field) ?>" name="<?= $escaper->escapeHtmlAttr($field) ?>" value="<?= $escaper->escapeHtmlAttr((string) ($values[$field] ?? '')) ?>" type="<?= $field === 'model_year' ? 'number' : 'text' ?>" maxlength="<?= $field === 'variant' ? '160' : '100' ?>" <?= $field !== 'variant' ? 'required' : '' ?> <?= $field === 'model_year' ? 'min="1886" max="2100"' : '' ?>>
+            <?php endforeach; ?>
+            <fieldset><legend><?= $escaper->escapeHtml(__('Fitment specifications (optional)')) ?></legend>
+                <p><?= $escaper->escapeHtml(__('Use a distinct variant label for each configuration. Dimensions are stored as whole millimetres. Referenced specifications cannot be rewritten.')) ?></p>
+                <?php foreach (\Automotive\Garage\Model\Specification::TEXT as $field => $label): ?>
+                    <label for="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml(__($label)) ?></label><input class="admin__control-text" id="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>" name="<?= $escaper->escapeHtmlAttr($field) ?>" maxlength="80" value="<?= $escaper->escapeHtmlAttr((string) ($values[$field] ?? '')) ?>">
+                <?php endforeach; ?>
+                <?php foreach (\Automotive\Garage\Model\Specification::CHOICES as $field => $choices): ?>
+                    <label for="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml(__(\Automotive\Garage\Model\Specification::CHOICE_LABELS[$field])) ?></label><select class="admin__control-select" id="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>" name="<?= $escaper->escapeHtmlAttr($field) ?>"><?php foreach ($choices as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= ($values[$field] ?? '') === $code ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?></select>
+                <?php endforeach; ?>
+                <?php foreach (\Automotive\Garage\Model\Specification::LENGTHS as $field => $label): ?>
+                    <label for="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml(__($label)) ?></label><input class="admin__control-text" id="garage-spec-<?= $escaper->escapeHtmlAttr($field) ?>" name="<?= $escaper->escapeHtmlAttr($field) ?>" type="number" min="1" max="50000" step="1" value="<?= $escaper->escapeHtmlAttr((string) ($values[$field] ?? '')) ?>">
+                <?php endforeach; ?>
+            </fieldset>
+            <label for="garage-type-enabled"><?= $escaper->escapeHtml(__('Enabled')) ?></label>
+            <select class="admin__control-select" id="garage-type-enabled" name="is_enabled"><option value="1" <?= !isset($values['is_enabled']) || $values['is_enabled'] ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('Yes')) ?></option><option value="0" <?= isset($values['is_enabled']) && !$values['is_enabled'] ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('No')) ?></option></select>
+            <div><button class="action-primary" type="submit"><?= $escaper->escapeHtml(__('Save vehicle definition')) ?></button> <a href="<?= $escaper->escapeUrl($block->getUrl('garage/manage/index')) ?>"><?= $escaper->escapeHtml(__('Add another')) ?></a></div>
+        </form>
+    </section>
+    <section aria-labelledby="garage-fitment-heading">
+        <h2 id="garage-fitment-heading"><?= $escaper->escapeHtml(__('Product fitment')) ?></h2>
+        <form method="get" action="<?= $escaper->escapeUrl($block->getUrl('garage/manage/index')) ?>" class="garage-admin-form">
+            <label for="garage-load-sku"><?= $escaper->escapeHtml(__('Product SKU')) ?></label><input class="admin__control-text" id="garage-load-sku" name="sku" value="<?= $escaper->escapeHtmlAttr($block->getSku()) ?>" required>
+            <button type="submit"><?= $escaper->escapeHtml(__('Load product fitment')) ?></button>
+        </form>
+        <?php if ($block->getSku() !== '' && !$fitment): ?><p><?= $escaper->escapeHtml(__('The SKU could not be found.')) ?></p><?php endif; ?>
+        <?php if ($fitment): ?>
+            <p><?= $escaper->escapeHtml($fitment['known'] ? __('This product has an explicit fitment rule.') : __('This product has no confirmed fitment mappings.')) ?></p>
+            <form method="post" action="<?= $escaper->escapeUrl($saveUrl) ?>" class="garage-admin-form">
+                <input type="hidden" name="form_key" value="<?= $escaper->escapeHtmlAttr($key) ?>"><input type="hidden" name="operation" value="save_fitment"><input type="hidden" name="sku" value="<?= $escaper->escapeHtmlAttr($fitment['sku']) ?>">
+                <label for="garage-fitment-codes"><?= $escaper->escapeHtml(__('Compatible vehicle codes, one per line')) ?></label><textarea class="admin__control-textarea" id="garage-fitment-codes" name="vehicle_codes" rows="7"><?= $escaper->escapeHtml(implode("\n", $fitment['codes'])) ?></textarea>
+                <label for="garage-universal"><?= $escaper->escapeHtml(__('Universal fitment')) ?></label><select class="admin__control-select" id="garage-universal" name="is_universal"><option value="0" <?= !$fitment['is_universal'] ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('No')) ?></option><option value="1" <?= $fitment['is_universal'] ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('Yes')) ?></option></select>
+                <label for="garage-universal-market"><?= $escaper->escapeHtml(__('Universal product market')) ?></label><select class="admin__control-select" id="garage-universal-market" name="universal_market"><?php foreach (['GB' => __('United Kingdom'), 'US' => __('United States'), 'all' => __('Both markets')] as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= $fitment['universal_market'] === $code ? 'selected' : '' ?>><?= $escaper->escapeHtml($label) ?></option><?php endforeach; ?></select>
+                <p><?= $escaper->escapeHtml(__('Saving replaces this product’s mappings. For universal products, leave the vehicle codes empty.')) ?></p>
+                <button class="action-primary" type="submit"><?= $escaper->escapeHtml(__('Save product fitment')) ?></button>
+            </form>
+            <form method="post" action="<?= $escaper->escapeUrl($saveUrl) ?>"><input type="hidden" name="form_key" value="<?= $escaper->escapeHtmlAttr($key) ?>"><input type="hidden" name="operation" value="clear_fitment"><input type="hidden" name="sku" value="<?= $escaper->escapeHtmlAttr($fitment['sku']) ?>"><button type="submit"><?= $escaper->escapeHtml(__('Remove fitment confirmation')) ?></button></form>
+        <?php endif; ?>
+    </section>
+    <section aria-labelledby="garage-import-heading">
+        <h2 id="garage-import-heading"><?= $escaper->escapeHtml(__('CSV imports')) ?></h2>
+        <p><?= $escaper->escapeHtml(__('Upload UTF-8 CSV files up to 1 MiB and 5,000 rows. Vehicle CSVs also accept the optional specification columns documented in the merchant guide. Legacy vehicle CSVs without market use GB. Each file is imported as a single transaction.')) ?></p>
+        <?php foreach (['import_types' => ['title' => __('Import vehicle definitions'), 'headers' => 'code,market,make,model,model_year,variant,is_enabled'], 'import_fitments' => ['title' => __('Replace fitment for included product SKUs'), 'headers' => 'sku,vehicle_code,universal,universal_market']] as $operation => $format): ?>
+            <form method="post" enctype="multipart/form-data" action="<?= $escaper->escapeUrl($saveUrl) ?>" class="garage-admin-form">
+                <h3><?= $escaper->escapeHtml($format['title']) ?></h3><code><?= $escaper->escapeHtml($format['headers']) ?></code>
+                <input type="hidden" name="form_key" value="<?= $escaper->escapeHtmlAttr($key) ?>"><input type="hidden" name="operation" value="<?= $escaper->escapeHtmlAttr($operation) ?>">
+                <label for="garage-<?= $escaper->escapeHtmlAttr($operation) ?>"><?= $escaper->escapeHtml(__('CSV file')) ?></label><input id="garage-<?= $escaper->escapeHtmlAttr($operation) ?>" type="file" name="csv" accept=".csv,text/csv" required>
+                <button type="submit"><?= $escaper->escapeHtml($format['title']) ?></button>
+            </form>
+        <?php endforeach; ?>
+    </section>
+</div>

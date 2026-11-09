@@ -1,0 +1,8 @@
+<?php
+/** @var \Automotive\Garage\Block\Shop\Summary $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<div class="garage-shop-summary">
+    <p><?= $escaper->escapeHtml(__('Shopping for %1. Results include products mapped to your vehicle and products marked as universal for its market.', $block->getVehicleName())) ?></p>
+    <p><a href="<?= $escaper->escapeUrl($block->getUrl('garage/account/index')) ?>"><?= $escaper->escapeHtml(__('Change vehicle in My Garage')) ?></a></p>
+</div>

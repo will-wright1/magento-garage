@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="catalog_product_prices"/>
+    <head><meta name="robots" content="NOINDEX,NOFOLLOW"/></head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Automotive\Garage\Block\Shop\Summary" name="garage.shop.summary" before="garage.shop.products" template="Automotive_Garage::shop/summary.phtml" cacheable="false"/>
+            <block class="Automotive\Garage\Block\Shop\ProductList" name="garage.shop.products" template="Automotive_Garage::shop/products.phtml" cacheable="false">
+                <block class="Magento\Framework\View\Element\RendererList" name="garage.product.details.renderers" as="details.renderers"><block class="Magento\Framework\View\Element\Template" name="garage.product.details.default" as="default"/></block>
+                <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="garage.product.toolbar" template="Magento_Catalog::product/list/toolbar.phtml"><block class="Magento\Theme\Block\Html\Pager" name="garage.product.pager"/></block>
+                <action method="setToolbarBlockName"><argument name="name" xsi:type="string">garage.product.toolbar</argument></action>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

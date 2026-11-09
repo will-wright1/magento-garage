@@ -1,0 +1,156 @@
+<?php
+/** @var \Automotive\Garage\Block\Account $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$vehicles = $block->getVehicles();
+$values = $block->getFormValues();
+$editing = $block->isEditing();
+$market = $values['vehicle_market'] ?? 'GB';
+$country = $values['registration_country'] ?? 'GB';
+$levels = \Automotive\Garage\Model\Market::levels($market);
+$markets = \Automotive\Garage\Model\Market::LABELS;
+$selectorConfig = json_encode(['Automotive_Garage/js/vehicle-selector' => [
+    'url' => $block->getUrl('garage/catalog/options'), 'market' => $market,
+    'make' => $values['make'] ?? '', 'model' => $values['model'] ?? '',
+    'year' => (string) ($values['model_year'] ?? ''), 'typeId' => (string) ($values['vehicle_type_id'] ?? ''),
+    'preferCatalogue' => !$editing || !empty($values['vehicle_type_id']),
+    'catalogueAvailable' => $block->hasVehicleCatalogue(), 'plateRequirement' => $block->plateRequirement(),
+]], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR);
+?>
+<div class="garage-account">
+    <p><?= $escaper->escapeHtml(__('Save your vehicles here and choose the one you are shopping for.')) ?></p>
+    <section class="garage-saved" aria-labelledby="garage-saved-title">
+        <h2 id="garage-saved-title"><?= $escaper->escapeHtml(__('Your vehicles')) ?></h2>
+        <?php if (!$vehicles): ?>
+            <div class="message info empty"><p><?= $escaper->escapeHtml(__('Your garage is empty. Add your first vehicle below.')) ?></p></div>
+        <?php else: ?>
+            <ul class="garage-vehicles">
+                <?php foreach ($vehicles as $vehicle): ?>
+                    <li class="garage-vehicle<?= $vehicle->isSelected ? ' garage-vehicle-selected' : '' ?>">
+                        <div class="garage-vehicle-heading">
+                            <strong class="<?= $escaper->escapeHtmlAttr($block->registrationClass($vehicle)) ?>"><?= $escaper->escapeHtml($vehicle->displayName()) ?></strong>
+                            <div class="garage-badges">
+                                <?php if ($vehicle->isSelected): ?>
+                                    <span class="garage-badge"><?= $escaper->escapeHtml(__('Selected')) ?></span>
+                                <?php endif; ?>
+                                <?php if ($vehicle->isDefault): ?>
+                                    <span class="garage-badge garage-badge-default"><?= $escaper->escapeHtml(__('Default')) ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <h3><?= $escaper->escapeHtml($vehicle->make . ' ' . $vehicle->model) ?></h3>
+                        <?php if ($vehicle->modelYear || $vehicle->variant !== ''): ?>
+                            <p><?= $escaper->escapeHtml(trim(($vehicle->modelYear ?? '') . ' ' . $vehicle->variant)) ?></p>
+                        <?php endif; ?>
+                        <p class="garage-market"><?= $escaper->escapeHtml(__('%1 specification', __($markets[$vehicle->market]))) ?><?php if ($vehicle->registration !== ''): ?> · <?= $escaper->escapeHtml(__($markets[$vehicle->registrationCountry])) ?> <?= $escaper->escapeHtml($vehicle->registrationRegion) ?><?php endif; ?></p>
+                        <?php if ($block->specificationLabel($vehicle) !== ''): ?><p class="garage-specifications"><?= $escaper->escapeHtml($block->specificationLabel($vehicle)) ?></p><?php endif; ?>
+                        <?php if ($vehicle->vin !== ''): ?><p><?= $escaper->escapeHtml(__('VIN / chassis ending %1', substr($vehicle->vin, -4))) ?></p><?php endif; ?>
+                        <?php if ($vehicle->nickname !== ''): ?>
+                            <p class="garage-nickname"><?= $escaper->escapeHtml($vehicle->nickname) ?></p>
+                        <?php endif; ?>
+                        <div class="garage-vehicle-actions">
+                            <?php if ($vehicle->vehicleTypeId !== null): ?>
+                                <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('garage/vehicle/shop')) ?>">
+                                    <?= $block->getBlockHtml('formkey') ?>
+                                    <input type="hidden" name="vehicle_id" value="<?= (int) $vehicle->id ?>">
+                                    <button type="submit" class="action primary" aria-label="<?= $escaper->escapeHtmlAttr(__('Shop for vehicle %1', $vehicle->displayName())) ?>"><span><?= $escaper->escapeHtml(__('Shop for this vehicle')) ?></span></button>
+                                </form>
+                            <?php else: ?>
+                                <a href="<?= $escaper->escapeUrl($block->getUrl('garage/account/index', ['id' => $vehicle->id, '_fragment' => 'garage-form-title'])) ?>"><?= $escaper->escapeHtml(__('Match vehicle to find parts')) ?></a>
+                            <?php endif; ?>
+                            <?php if (!$vehicle->isSelected): ?>
+                                <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('garage/vehicle/select')) ?>">
+                                    <?= $block->getBlockHtml('formkey') ?>
+                                    <input type="hidden" name="vehicle_id" value="<?= (int) $vehicle->id ?>">
+                                    <button type="submit" class="action primary" aria-label="<?= $escaper->escapeHtmlAttr(__('Select vehicle %1', $vehicle->displayName())) ?>"><span><?= $escaper->escapeHtml(__('Select vehicle')) ?></span></button>
+                                </form>
+                            <?php endif; ?>
+                            <?php if (!$vehicle->isDefault): ?>
+                                <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('garage/vehicle/defaultVehicle')) ?>">
+                                    <?= $block->getBlockHtml('formkey') ?>
+                                    <input type="hidden" name="vehicle_id" value="<?= (int) $vehicle->id ?>">
+                                    <button type="submit" class="action secondary" aria-label="<?= $escaper->escapeHtmlAttr(__('Make %1 your default vehicle', $vehicle->displayName())) ?>"><span><?= $escaper->escapeHtml(__('Make default')) ?></span></button>
+                                </form>
+                            <?php endif; ?>
+                            <a class="action edit" href="<?= $escaper->escapeUrl($block->getUrl('garage/account/index', ['id' => $vehicle->id, '_fragment' => 'garage-form-title'])) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('Edit vehicle %1', $vehicle->displayName())) ?>"><?= $escaper->escapeHtml(__('Edit')) ?></a>
+                            <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('garage/vehicle/delete')) ?>">
+                                <?= $block->getBlockHtml('formkey') ?>
+                                <input type="hidden" name="vehicle_id" value="<?= (int) $vehicle->id ?>">
+                                <button type="submit" class="action secondary garage-remove" aria-label="<?= $escaper->escapeHtmlAttr(__('Remove vehicle %1', $vehicle->displayName())) ?>"><span><?= $escaper->escapeHtml(__('Remove')) ?></span></button>
+                            </form>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </section>
+    <section class="garage-form-section" aria-labelledby="garage-form-title">
+        <h2 id="garage-form-title"><?= $escaper->escapeHtml($editing ? __('Edit vehicle') : __('Add a vehicle')) ?></h2>
+        <form class="form garage-form" method="post" action="<?= $escaper->escapeUrl($block->getUrl('garage/vehicle/save')) ?>" data-mage-init="<?= $escaper->escapeHtmlAttr($selectorConfig) ?>">
+            <?= $block->getBlockHtml('formkey') ?>
+            <input type="hidden" name="vehicle_id" value="<?= $escaper->escapeHtmlAttr((string) ($values['vehicle_id'] ?? '')) ?>">
+            <fieldset class="fieldset">
+                <legend class="legend"><span><?= $escaper->escapeHtml(__('Vehicle details')) ?></span></legend>
+                <div class="field required">
+                    <label class="label" for="garage-market"><?= $escaper->escapeHtml(__('Vehicle specification market')) ?></label>
+                    <select id="garage-market" name="vehicle_market" required>
+                        <?php foreach ($markets as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= $code === $market ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?>
+                    </select>
+                    <p class="note"><?= $escaper->escapeHtml(__('Choose the specification the vehicle was built for, including imported vehicles.')) ?></p>
+                </div>
+                <div data-identification-fields>
+                    <div class="field required">
+                        <label class="label" for="garage-country"><?= $escaper->escapeHtml(__('Plate issuing country')) ?></label>
+                        <select id="garage-country" name="registration_country" required>
+                            <?php foreach ($markets as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= $code === $country ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="garage-registration"><?= $escaper->escapeHtml(__('Registration number')) ?></label>
+                        <input class="input-text garage-registration-input" id="garage-registration" name="registration" type="text" value="<?= $escaper->escapeHtmlAttr((string) ($values['registration'] ?? '')) ?>" maxlength="30" <?= $block->isPlateRequired($country) ? 'required' : '' ?> autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="garage-registration-hint">
+                        <div class="note" id="garage-registration-hint"><?= $escaper->escapeHtml(__('Use the issuing country and state for the plate, independently of vehicle specification.')) ?></div>
+                    </div>
+                    <div class="field" data-region-fields>
+                        <label class="label" for="garage-region"><?= $escaper->escapeHtml(__('US issuing state / jurisdiction')) ?></label>
+                        <select id="garage-region" name="registration_region"><option value=""><?= $escaper->escapeHtml(__('Choose a state or jurisdiction')) ?></option>
+                            <?php foreach (\Automotive\Garage\Model\Market::US_REGIONS as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= $code === ($values['registration_region'] ?? '') ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?>
+                        </select>
+                        <p class="note"><?= $escaper->escapeHtml(__('Required when entering a US license plate. Leave blank for UK plates.')) ?></p>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="garage-vin"><?= $escaper->escapeHtml(__('VIN / chassis number (optional)')) ?></label>
+                        <input class="input-text garage-registration-input" id="garage-vin" name="vin" maxlength="40" value="<?= $escaper->escapeHtmlAttr((string) ($values['vin'] ?? '')) ?>" autocomplete="off" autocapitalize="characters" spellcheck="false">
+                        <label class="label" for="garage-vin-format"><?= $escaper->escapeHtml(__('VIN / chassis format')) ?></label>
+                        <select id="garage-vin-format" name="vin_format"><option value="standard" <?= ($values['vin_format'] ?? 'standard') === 'standard' ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('Modern 17-character VIN')) ?></option><option value="legacy" <?= ($values['vin_format'] ?? '') === 'legacy' ? 'selected' : '' ?>><?= $escaper->escapeHtml(__('Older / imported chassis number')) ?></option></select>
+                        <p class="note"><?= $escaper->escapeHtml(__('Stored manually. No VIN decoding or registration lookup is performed.')) ?></p>
+                    </div>
+                </div>
+                <div class="garage-vehicle-selector">
+                    <input type="hidden" name="vehicle_type_id" data-vehicle-type value="<?= $escaper->escapeHtmlAttr((string) ($values['vehicle_type_id'] ?? '')) ?>">
+                    <div data-catalogue-toggle hidden><label><input type="checkbox" data-use-catalogue> <?= $escaper->escapeHtml(__('Choose from the vehicle catalogue')) ?></label></div>
+                    <div data-catalogue-fields hidden>
+                        <?php foreach ($levels as $field): $label = ['make' => __('Make'), 'model' => __('Model'), 'year' => __('Model year'), 'variant' => __('Vehicle specification')][$field]; ?>
+                            <div class="field required" data-field="<?= $escaper->escapeHtmlAttr($field) ?>"><label class="label" for="garage-catalogue-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml($label) ?></label><select id="garage-catalogue-<?= $escaper->escapeHtmlAttr($field) ?>" data-level="<?= $escaper->escapeHtmlAttr($field) ?>" disabled><option value=""><?= $escaper->escapeHtml(__('Choose an option')) ?></option></select></div>
+                        <?php endforeach; ?>
+                    </div>
+                    <p data-selector-status role="status" aria-live="polite"></p>
+                    <div data-manual-fields>
+                        <?php foreach ($levels as $field): ?>
+                            <?php if ($field === 'year'): ?>
+                                <div class="field" data-field="year"><label class="label" for="garage-year"><?= $escaper->escapeHtml(__('Model year')) ?></label><input class="input-text" id="garage-year" name="model_year" type="number" min="1886" max="2100" <?= $market === 'US' ? 'required' : '' ?> value="<?= $escaper->escapeHtmlAttr((string) ($values['model_year'] ?? '')) ?>"><p class="note"><?= $escaper->escapeHtml(__('Use model year, which may differ from the first registration year. Required for US-specification vehicles.')) ?></p></div>
+                            <?php else: $required = $field !== 'variant'; $label = ['make' => __('Make'), 'model' => __('Model'), 'variant' => __('Variant / specification (optional)')][$field]; ?>
+                                <div class="field<?= $required ? ' required' : '' ?>" data-field="<?= $escaper->escapeHtmlAttr($field) ?>"><label class="label" for="garage-<?= $escaper->escapeHtmlAttr($field) ?>"><?= $escaper->escapeHtml($label) ?></label><input class="input-text" id="garage-<?= $escaper->escapeHtmlAttr($field) ?>" name="<?= $escaper->escapeHtmlAttr($field) ?>" value="<?= $escaper->escapeHtmlAttr((string) ($values[$field] ?? '')) ?>" maxlength="<?= $field === 'variant' ? '160' : '100' ?>" <?= $required ? 'required' : '' ?>></div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="field"><label class="label" for="garage-nickname"><?= $escaper->escapeHtml(__('Nickname (optional)')) ?></label><input class="input-text" id="garage-nickname" name="nickname" type="text" value="<?= $escaper->escapeHtmlAttr((string) ($values['nickname'] ?? '')) ?>" maxlength="100"></div>
+            </fieldset>
+            <div class="actions-toolbar garage-form-actions">
+                <div class="primary"><button class="action save primary" type="submit"><span><?= $escaper->escapeHtml($editing ? __('Save changes') : __('Add vehicle')) ?></span></button></div>
+                <?php if ($editing): ?>
+                    <div class="secondary"><a class="action" href="<?= $escaper->escapeUrl($block->getUrl('garage/account/index')) ?>"><?= $escaper->escapeHtml(__('Cancel editing')) ?></a></div>
+                <?php endif; ?>
+            </div>
+        </form>
+    </section>
+</div>

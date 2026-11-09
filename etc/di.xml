@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Automotive\Garage\Api\VehicleStorageInterface" type="Automotive\Garage\Model\ResourceModel\VehicleStorage"/>
+    <preference for="Automotive\Garage\Api\VehicleTypeProviderInterface" type="Automotive\Garage\Model\ResourceModel\VehicleTypeStorage"/>
+    <preference for="Automotive\Garage\Api\SettingsInterface" type="Automotive\Garage\Model\Settings"/>
+    <virtualType name="AutomotiveGaragePlateOptions" type="Automotive\Garage\Model\Config\Source\Options"><arguments><argument name="kind" xsi:type="string">plate</argument></arguments></virtualType>
+    <virtualType name="AutomotiveGarageBadgeOptions" type="Automotive\Garage\Model\Config\Source\Options"><arguments><argument name="kind" xsi:type="string">badge</argument></arguments></virtualType>
+    <type name="Automotive\Garage\Model\Garage">
+        <arguments>
+            <argument name="maxVehicles" xsi:type="number">50</argument>
+            <argument name="vehicleTypes" xsi:type="object">Automotive\Garage\Model\ResourceModel\VehicleTypeStorage</argument>
+            <argument name="settings" xsi:type="object">Automotive\Garage\Model\Settings</argument>
+        </arguments>
+    </type>
+</config>
