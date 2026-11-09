@@ -1,5 +1,5 @@
 {
-    "name": "automotive/module-garage",
+    "name": "will-wright1/module-garage",
     "description": "Customer vehicle garages, structured vehicle selection and product fitment for Magento 2.",
     "type": "magento2-module",
     "license": "proprietary",
@@ -41,5 +41,10 @@
             "/.gitignore",
             "/.gitattributes"
         ]
+    },
+    "homepage": "https://github.com/will-wright1/magento-garage",
+    "support": {
+        "issues": "https://github.com/will-wright1/magento-garage/issues",
+        "source": "https://github.com/will-wright1/magento-garage"
     }
 }

@@ -8,11 +8,12 @@ UK and US specification markets are supported. Plate and VIN entry remain manual
 
 ## Package and platform
 
-- Provisional module: `Automotive_Garage`.
-- Provisional Composer package: `automotive/module-garage`. This name has not been reserved or published.
+- Magento module: `Automotive_Garage`.
+- Composer package: `will-wright1/module-garage`.
+- Source repository: [will-wright1/magento-garage](https://github.com/will-wright1/magento-garage).
 - Designed for Magento Open Source / Adobe Commerce 2.4 installations using a supported PHP 8.2–8.5 combination. Composer constraints do not replace platform compatibility testing.
 - Account management has a server-rendered manual-entry fallback. The cascading catalogue selector uses Magento's RequireJS initializer and targets Luma/custom Magento storefronts. Hyvä needs a selector adapter; its compatibility has not been verified.
-- The Composer licence is temporarily `proprietary`. Decide the final vendor namespace and licence before public distribution.
+- Licence: proprietary, all rights reserved. Public source availability does not make this an open-source package. See [LICENSE](LICENSE).
 
 ## Install for development
 
@@ -26,11 +27,11 @@ bin/magento cache:clean
 
 Follow your normal DI compilation and static-content deployment steps for the deployment mode.
 
-For Composer development, place the checkout inside your Magento application, for example `packages/automotive/module-garage`, then run:
+For Composer development, place the checkout inside your Magento application, for example `packages/will-wright1/module-garage`, then run:
 
 ```sh
-composer config repositories.automotive-garage path packages/automotive/module-garage
-composer require automotive/module-garage:@dev
+composer config repositories.automotive-garage path packages/will-wright1/module-garage
+composer require will-wright1/module-garage:@dev
 bin/magento module:enable Automotive_Garage
 bin/magento setup:upgrade
 bin/magento cache:clean
@@ -101,6 +102,15 @@ npm test --prefix dev/js
 
 The standalone PHP tests use persistence doubles and evaluate the production account template with block/escaping doubles. Selector tests execute the production JavaScript in jsdom, including asynchronous response races and error handling. Database and HTTP integration tests are provided in `Test/Integration`. See [testing and release checks](docs/testing.md) for the validation status and remaining runtime checks.
 
-## Publishing later
+## Beta distribution
 
-Choose the final namespace and licence, complete the Magento installation, integration, compilation and storefront checks, then tag a release. Push this module repository to GitHub and submit its public repository URL to Packagist. Nothing has been published remotely by this implementation.
+The first release candidate is `0.1.0-beta.1`. Once the repository is registered on Packagist, install it with:
+
+```sh
+composer require will-wright1/module-garage:0.1.0-beta.1
+bin/magento module:enable Automotive_Garage
+bin/magento setup:upgrade
+bin/magento cache:clean
+```
+
+Complete the target-store acceptance checks before a live deployment. A Packagist listing distributes Composer metadata; it does not grant permissions beyond the proprietary licence. Follow your normal DI compilation and static-content deployment steps.
