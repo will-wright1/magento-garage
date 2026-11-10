@@ -1,0 +1,41 @@
+<?php
+/** @var \Automotive\Garage\Block\Adminhtml\CustomerGarages $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$filter = $block->filter();
+$result = $block->result();
+?>
+<div class="garage-manage">
+    <p><?= $escaper->escapeHtml(__('Search saved vehicles by customer name, email, registration, make, model or nickname. Customers with an empty garage can be opened from their customer record or by customer ID below.')) ?></p>
+    <form method="get" action="<?= $escaper->escapeUrl($block->getUrl('garage/customer/index')) ?>" class="garage-admin-filters">
+        <div><label for="garage-search"><?= $escaper->escapeHtml(__('Search')) ?></label><input class="admin__control-text" id="garage-search" name="q" maxlength="100" value="<?= $escaper->escapeHtmlAttr($filter->query) ?>"></div>
+        <div><label for="garage-market"><?= $escaper->escapeHtml(__('Specification market')) ?></label><select class="admin__control-select" id="garage-market" name="market"><option value=""><?= $escaper->escapeHtml(__('All markets')) ?></option><?php foreach (\Automotive\Garage\Model\Market::LABELS as $code => $label): ?><option value="<?= $escaper->escapeHtmlAttr($code) ?>" <?= $filter->market === $code ? 'selected' : '' ?>><?= $escaper->escapeHtml(__($label)) ?></option><?php endforeach; ?></select></div>
+        <div><label for="garage-website"><?= $escaper->escapeHtml(__('Website')) ?></label><select class="admin__control-select" id="garage-website" name="website_id"><option value=""><?= $escaper->escapeHtml(__('All websites')) ?></option><?php foreach ($block->websites() as $website): ?><option value="<?= (int) $website->getId() ?>" <?= $filter->websiteId === (int) $website->getId() ? 'selected' : '' ?>><?= $escaper->escapeHtml($website->getName()) ?></option><?php endforeach; ?></select></div>
+        <button class="action-primary" type="submit"><?= $escaper->escapeHtml(__('Search garages')) ?></button><a href="<?= $escaper->escapeUrl($block->getUrl('garage/customer/index')) ?>"><?= $escaper->escapeHtml(__('Reset')) ?></a>
+    </form>
+    <p><?= $escaper->escapeHtml(__('%1 saved vehicles found.', $result['total'])) ?></p>
+    <div class="garage-admin-table"><table class="data-grid">
+        <thead><tr><?php foreach (['Customer', 'Vehicle', 'Plate jurisdiction', 'Specification market', 'Preferences', 'Website', 'Updated (UTC)', 'Action'] as $heading): ?><th class="data-grid-th" scope="col"><?= $escaper->escapeHtml(__($heading)) ?></th><?php endforeach; ?></tr></thead>
+        <tbody>
+        <?php foreach ($result['rows'] as $row): ?>
+            <tr>
+                <td><?= $escaper->escapeHtml(trim($row['firstname'] . ' ' . $row['lastname'])) ?><br><?= $escaper->escapeHtml($row['email']) ?><br><?= $escaper->escapeHtml(__('Customer #%1', $row['customer_id'])) ?></td>
+                <td><strong><?= $escaper->escapeHtml($row['registration_display'] ?: ($row['registration'] ?: (string) __('No plate'))) ?></strong><br><?= $escaper->escapeHtml(trim(($row['model_year'] ?? '') . ' ' . $row['make'] . ' ' . $row['model'] . ' ' . $row['variant'])) ?><?php if ($row['nickname']): ?><br><?= $escaper->escapeHtml($row['nickname']) ?><?php endif; ?></td>
+                <td><?= $escaper->escapeHtml(trim($row['registration_country'] . ' ' . $row['registration_region'])) ?></td>
+                <td><?= $escaper->escapeHtml(__(\Automotive\Garage\Model\Market::LABELS[$row['vehicle_market']] ?? $row['vehicle_market'])) ?></td>
+                <td><?= $escaper->escapeHtml(implode(', ', array_filter([$row['is_default'] ? (string) __('Default') : '', $row['is_selected'] ? (string) __('Selected') : '']))) ?></td>
+                <td><?= $escaper->escapeHtml($row['website_name']) ?></td><td><?= $escaper->escapeHtml($row['updated_at']) ?></td>
+                <td><a href="<?= $escaper->escapeUrl($block->getUrl('garage/customer/view', ['customer_id' => (int) $row['customer_id']])) ?>"><?= $escaper->escapeHtml(__('View garage')) ?></a></td>
+            </tr>
+        <?php endforeach; ?>
+        <?php if (!$result['rows']): ?><tr><td colspan="8"><?= $escaper->escapeHtml(__('No saved vehicles match these filters.')) ?></td></tr><?php endif; ?>
+        </tbody>
+    </table></div>
+    <nav class="garage-admin-pages" aria-label="<?= $escaper->escapeHtmlAttr(__('Customer garage pages')) ?>">
+        <?php if ($result['page'] > 1): ?><a href="<?= $escaper->escapeUrl($block->getUrl('garage/customer/index', $filter->params($result['page'] - 1))) ?>"><?= $escaper->escapeHtml(__('Previous')) ?></a><?php endif; ?>
+        <span><?= $escaper->escapeHtml(__('Page %1 of %2', $result['page'], $result['pages'])) ?></span>
+        <?php if ($result['page'] < $result['pages']): ?><a href="<?= $escaper->escapeUrl($block->getUrl('garage/customer/index', $filter->params($result['page'] + 1))) ?>"><?= $escaper->escapeHtml(__('Next')) ?></a><?php endif; ?>
+    </nav>
+    <form method="get" action="<?= $escaper->escapeUrl($block->getUrl('garage/customer/view')) ?>" class="garage-admin-filters">
+        <div><label for="garage-customer-id"><?= $escaper->escapeHtml(__('Open customer ID')) ?></label><input class="admin__control-text" id="garage-customer-id" name="customer_id" type="number" min="1" step="1" required></div><button type="submit"><?= $escaper->escapeHtml(__('Open garage')) ?></button>
+    </form>
+</div>

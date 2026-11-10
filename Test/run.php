@@ -204,6 +204,7 @@ $tests['failed first save rolls back the inserted vehicle as well as preferences
 require __DIR__ . '/template-tests.php';
 require __DIR__ . '/catalogue-tests.php';
 require __DIR__ . '/market-tests.php';
+require __DIR__ . '/admin-tests.php';
 
 $failures = 0;
 foreach ($tests as $name => $test) {

@@ -15,6 +15,19 @@ UK and US specification markets are supported. Plate and VIN entry remain manual
 - Account management has a server-rendered manual-entry fallback. The cascading catalogue selector uses Magento's RequireJS initializer and targets Luma/custom Magento storefronts. Hyvä needs a selector adapter; its compatibility has not been verified.
 - Licence: proprietary, all rights reserved. Public source availability does not make this an open-source package. See [LICENSE](LICENSE).
 
+## Install the beta with Composer
+
+From the Magento root:
+
+```sh
+composer require will-wright1/module-garage:0.1.0-beta.2
+bin/magento module:enable Automotive_Garage
+bin/magento setup:upgrade
+bin/magento cache:clean
+```
+
+For an existing Composer installation, the same `composer require` command upgrades the module. Follow the store's usual DI compilation and static-content deployment process. Review the [admin role setup](docs/merchant-guide.md#manage-customer-garages) after upgrading.
+
 ## Install for development
 
 Copy this repository's contents into `app/code/Automotive/Garage` in an existing Magento application. From the Magento root:
@@ -67,6 +80,14 @@ Open **Catalog → Garage Vehicles & Fitment**. The admin role needs the `Automo
 Configure default market, plate country, plate requirement and badge style under **Stores → Configuration → Catalog → Customer Garage**. Defaults apply only to new records. Use Magento store-view locales `en_GB` and `en_US` for British/American wording.
 
 See the [merchant guide](docs/merchant-guide.md) for examples and migration notes. No sample fitment data is automatically installed.
+
+## Customer garage administration
+
+Open **Customers → Customer Garages** to search saved vehicles by customer name/email, registration, make, model or nickname, with website and specification-market filters. Open a customer's garage to see all saved vehicles, catalogue links, masked VINs and selected/default preferences. Existing customer records also have a **Customer Garage** tab with a summary and a link to the garage, including empty garages.
+
+Grant **View Customer Garages** (`Automotive_Garage::customer_view`) for read-only access. Grant **Manage Customer Garages** (`Automotive_Garage::customer_manage`) as well to add/edit/delete vehicles, link an enabled catalogue code and change default/selected vehicles. These permissions are independent of vehicle-catalogue management. Full VINs are available only in a manager's vehicle edit form. Changes apply directly to the customer account and reuse customer ownership, uniqueness, limits and transaction rules.
+
+Admin entry uses the customer's account-creation store view for garage defaults and plate policy, falling back to the customer's website default store if necessary. Administrative changes are logged with administrator/customer/vehicle IDs and operation, without registration or VIN values. See the [admin guide](docs/merchant-guide.md#manage-customer-garages) for role setup and operational details.
 
 ## Data and security
 

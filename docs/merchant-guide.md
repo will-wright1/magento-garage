@@ -1,4 +1,27 @@
-# Vehicle catalogue and product fitment
+# Garage administration and product fitment
+
+## Manage customer garages
+
+Use **Customers → Customer Garages** for the cross-customer saved-vehicle list. Search names, email addresses, plate text, makes, models and nicknames; narrow results by website or specification market. The list uses 50-row SQL pagination and does not include full VINs. It lists saved vehicles, so customers with an empty garage will not appear. Open those customers using their numeric customer ID or **Customers → All Customers → Edit → Customer Garage**.
+
+Open **View garage** to see one customer's vehicles and their current default and selected flags. Default is the fallback when selection is removed; Selected controls the vehicle-specific parts results. VINs are masked in summaries. Staff with management permission can add a vehicle, edit its details, choose default/selected vehicles or delete it after the confirmation dialog. Removing a default/selected vehicle uses the same reassignment rules as the customer account.
+
+Set roles under **System → Permissions → User Roles → Role Resources → Customers**:
+
+- **View Customer Garages** grants read-only garage access, including registrations and customer contact details.
+- **Manage Customer Garages** additionally permits writes and full VIN access in the edit form. Give managers both garage permissions.
+- **All Customers** is also needed to open Magento's customer edit screen. It is not needed for the dedicated Customer Garages screen.
+- **Manage Garage Vehicles and Product Fitment** under Catalog remains separate; it does not grant access to customer garages.
+
+After installing/updating, clean Magento's configuration/layout caches and sign in again if the menu or role resources have not refreshed. Existing unrestricted administrators inherit these permissions; restricted roles should be reviewed explicitly.
+
+For manual entry, leave **Vehicle catalogue code** blank and supply make/model (plus model year for US specifications). For known fitment, enter an enabled code from **Catalog → Garage Vehicles & Fitment**; the code supplies canonical make/model/year/variant. Leaving a previously linked code blank removes the fitment association. Changing or adding a disabled code is rejected. A plate does not automatically identify a vehicle.
+
+UK/US defaults and plate requirements come from the customer's `store_id` when that store belongs to the customer's website, otherwise the website default store. The screen names this store. Saved records keep their existing market and jurisdiction when edited; the form allows staff to change them deliberately. US plates require their issuing state/jurisdiction; GB plates must have no US state selected. Current database and input validation still apply, including duplicate identifiers and the vehicle limit.
+
+Garage forms save independently of Magento's customer form. Save customer changes before following the garage link. Each successful change records administrator ID, customer ID, submitted vehicle ID (empty for a new record) and operation in the configured PSR logger, normally `var/log/system.log`. This is an operational record, not a before/after revision history or undo system. Vehicle plates, VINs and personal text are omitted from success logs.
+
+Changes are visible when the customer next opens/reloads My Garage. An already-open customer tab or a custom integration caching private sections may need refresh. No customer email is sent. These permissions apply across the Magento installation; website filters narrow the display and are not website-based access restrictions.
 
 ## Upgrade an existing garage installation
 

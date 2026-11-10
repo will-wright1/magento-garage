@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
-    <menu><add id="Automotive_Garage::manage" title="Garage Vehicles &amp; Fitment" module="Automotive_Garage" sortOrder="90" parent="Magento_Catalog::catalog" action="garage/manage/index" resource="Automotive_Garage::manage"/></menu>
+    <menu>
+        <add id="Automotive_Garage::manage" title="Garage Vehicles &amp; Fitment" module="Automotive_Garage" sortOrder="90" parent="Magento_Catalog::catalog" action="garage/manage/index" resource="Automotive_Garage::manage"/>
+        <add id="Automotive_Garage::customer_view" title="Customer Garages" module="Automotive_Garage" sortOrder="95" parent="Magento_Customer::customer" action="garage/customer/index" resource="Automotive_Garage::customer_view"/>
+    </menu>
 </config>

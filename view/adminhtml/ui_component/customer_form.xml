@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <htmlContent name="automotive_garage_content">
+        <block class="Automotive\Garage\Block\Adminhtml\Customer\GarageTab" name="automotive.garage.customer.tab" template="Automotive_Garage::customer/tab.phtml" acl="Automotive_Garage::customer_view"/>
+    </htmlContent>
+</form>

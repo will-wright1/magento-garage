@@ -4,3 +4,8 @@
 .garage-admin-form button { justify-self: start; }
 .garage-admin-pages { display: flex; gap: 16px; align-items: center; margin: 16px 0; }
 .garage-manage .data-grid td { overflow-wrap: anywhere; }
+.garage-admin-filters { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; margin: 24px 0; }
+.garage-admin-filters label { display: block; margin-bottom: 8px; font-weight: 600; }
+.garage-admin-filters input { min-width: 260px; }
+.garage-admin-table { overflow-x: auto; margin: 20px 0; }
+.garage-admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }

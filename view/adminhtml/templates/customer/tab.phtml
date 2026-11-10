@@ -1,0 +1,14 @@
+<?php
+/** @var \Automotive\Garage\Block\Adminhtml\Customer\GarageTab $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$vehicles = $block->vehicles();
+?>
+<p><?= $escaper->escapeHtml(__('%1 saved vehicles in this customer’s garage.', count($vehicles))) ?></p>
+<?php if ($vehicles): ?>
+<table class="data-grid">
+    <thead><tr><th class="data-grid-th" scope="col"><?= $escaper->escapeHtml(__('Vehicle')) ?></th><th class="data-grid-th" scope="col"><?= $escaper->escapeHtml(__('Specification market')) ?></th><th class="data-grid-th" scope="col"><?= $escaper->escapeHtml(__('Preferences')) ?></th></tr></thead>
+    <tbody><?php foreach ($vehicles as $vehicle): ?><tr><td><?= $escaper->escapeHtml($vehicle->displayName()) ?><br><?= $escaper->escapeHtml(trim(($vehicle->modelYear ?? '') . ' ' . $vehicle->make . ' ' . $vehicle->model . ' ' . $vehicle->variant)) ?></td><td><?= $escaper->escapeHtml(__(\Automotive\Garage\Model\Market::LABELS[$vehicle->market])) ?></td><td><?= $escaper->escapeHtml(implode(', ', array_filter([$vehicle->isDefault ? (string) __('Default') : '', $vehicle->isSelected ? (string) __('Selected') : '']))) ?></td></tr><?php endforeach; ?></tbody>
+</table>
+<?php endif; ?>
+<p><a class="action-default" href="<?= $escaper->escapeUrl($block->getUrl('garage/customer/view', ['customer_id' => $block->customerId()])) ?>"><?= $escaper->escapeHtml(__('Open customer garage')) ?></a></p>
+<p><?= $escaper->escapeHtml(__('Garage changes are saved separately from this customer form. Save any customer changes before opening the garage.')) ?></p>

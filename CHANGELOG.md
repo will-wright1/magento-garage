@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-beta.2 — 2026-11-10
+
+- Customer Garages admin search with website/market filters and SQL pagination.
+- Customer record garage tab and customer-scoped vehicle editing, catalogue linking, deletion and preference controls.
+- Separate view/manage role permissions, masked summary VINs, protected POST actions and operational change logging.
+- Customer store-view configuration for admin UK/US defaults and validation, with website-default fallback.
+- Repeatable admin runtime checks for ownership, role separation, data exposure, filtering, pagination and CSRF/method guards.
+
+Validated on the disposable Magento 2.4.9 installation with 45 standalone PHP tests, 13 JavaScript tests, 20 admin runtime checks, 17 market runtime checks and seven original runtime checks. Magento XML schema validation and DI compilation pass. Browser checks cover customer garage creation/editing, duplicate errors, cancellation of deletion and the customer-record tab. Merchant-specific acceptance testing remains required; see [the validation record](docs/testing.md).
+
 ## 0.1.0-beta.1 — 2026-11-09
 
 Initial beta prepared for staging evaluation on Magento 2.4 with Luma-compatible storefronts.

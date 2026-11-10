@@ -9,7 +9,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class Settings implements SettingsInterface
 {
-    public function __construct(private readonly ScopeConfigInterface $config)
+    public function __construct(private readonly ScopeConfigInterface $config, private readonly ?int $storeId = null)
     {
     }
 
@@ -41,7 +41,7 @@ class Settings implements SettingsInterface
 
     private function choice(string $field, array $allowed, string $fallback): string
     {
-        $value = $this->config->getValue('automotive_garage/general/' . $field, ScopeInterface::SCOPE_STORE);
+        $value = $this->config->getValue('automotive_garage/general/' . $field, ScopeInterface::SCOPE_STORE, $this->storeId);
         return in_array($value, $allowed, true) ? $value : $fallback;
     }
 }
