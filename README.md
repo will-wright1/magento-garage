@@ -125,13 +125,6 @@ The standalone PHP tests use persistence doubles and evaluate the production acc
 
 ## Beta distribution
 
-The first release candidate is `0.1.0-beta.1`. Once the repository is registered on Packagist, install it with:
-
-```sh
-composer require will-wright1/module-garage:0.1.0-beta.1
-bin/magento module:enable Automotive_Garage
-bin/magento setup:upgrade
-bin/magento cache:clean
-```
+The current beta is `0.1.0-beta.2`, available on [Packagist](https://packagist.org/packages/will-wright1/module-garage). Use the Composer instructions above to install or upgrade.
 
 Complete the target-store acceptance checks before a live deployment. A Packagist listing distributes Composer metadata; it does not grant permissions beyond the proprietary licence. Follow your normal DI compilation and static-content deployment steps.
